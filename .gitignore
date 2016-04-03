@@ -1,0 +1,23 @@
+#############
+# Log Files #
+#############
+*.log
+
+#########
+# Notes #
+#########
+notebook.md
+
+#####################
+# Behind the scenes #
+#####################
+
+# Python virtulenv and bytecode
+env/
+__pycache__/
+
+# Text editor swap files
+*.swp
+
+# Config files
+*.config
