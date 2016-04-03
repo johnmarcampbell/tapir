@@ -16,9 +16,9 @@ class Root(Resource):
     """ Class for Root API resource """
 
 
-    def __init__(self, oath = ''):
+    def __init__(self, oauth = ''):
         """ Initialize some parameters """
-        Resource.__init__(self, oath)
+        Resource.__init__(self, oauth)
 
     def get(self):
         """
@@ -32,3 +32,87 @@ class Root(Resource):
             headers.update(self.oauth_header)
 
         return requests.get(self.base_url, headers = headers)
+
+class Stream(Resource):
+    """ Class for Stream API resource """
+
+
+
+    def __init__(self, oauth = ''):
+        """ Initialize some parameters """
+        Resource.__init__(self, oauth)
+        self.base_url += "/streams"
+
+    def channel(self, channel):
+        """ 
+        GET /streams/:channel/    
+        Returns a stream object if live.
+        """
+        request_url = self.base_url + "/" + channel
+        return requests.get(request_url, headers = self.version_header)
+
+    # TODO: Implement query parameters (game, channel, limit, etc.)
+    def get(self):
+        """
+        GET /streams
+        Returns a list of stream objects that are queried by a number of
+        parameters sorted by number of viewers descending.
+        """
+        return requests.get(self.base_url, headers = self.version_header)
+
+    def featured(self):
+        """
+        GET /streams/featured
+        Returns a list of featured (promoted) stream objects.
+        """
+        request_url = self.base_url + "/featured"
+        return requests.get(request_url, headers = self.version_header)
+
+    def summary(self):
+        """
+        GET /streams/summary
+        Returns a summary of current streams.
+        """
+        request_url = self.base_url + "/summary"
+        return requests.get(request_url, headers = self.version_header)
+    
+    def followed(self):
+        """
+        GET /streams/followed
+        Returns a list of stream objects that the authenticated user is following.
+        """
+        request_url = self.base_url + "/followed"
+        headers = self.version_header.copy()
+        if self.oauth:
+            headers.update(self.oauth_header)
+
+        return requests.get(request_url, headers = headers)
+
+class User(Resource):
+    """ Class for User API resource """
+
+
+
+    def __init__(self, oauth = ''):
+        """ Initialize some parameters """
+
+        Resource.__init__(self, oauth)
+        self.base_url += "/user"
+
+    def get(self):
+        """
+        GET /user
+        Returns a user object.
+        """
+        headers = self.version_header.copy()
+        if self.oauth:
+            headers.update(self.oauth_header)
+        return requests.get(self.base_url, headers = headers)
+
+    def user(self, user):
+        """
+        GET /users/:user
+        Returns a user object.
+        """
+        request_url = self.base_url + "s/" + user
+        return requests.get(request_url, headers = self.version_header)
