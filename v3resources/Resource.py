@@ -116,3 +116,90 @@ class User(Resource):
         """
         request_url = self.base_url + "s/" + user
         return requests.get(request_url, headers = self.version_header)
+
+class Channel(Resource):
+    """
+    DOCSTRING
+    """
+
+
+    def __init__(self, oauth = ''):
+        """ Initialize some parameters """
+        Resource.__init__(self, oauth)
+        self.base_url += "/channel"
+
+    def get(self):
+        """
+        GET /channel
+        Returns a channel object.
+        """
+        headers = self.version_header.copy()
+        if self.oauth:
+            headers.update(self.oauth_header)
+        return requests.get(self.base_url, headers = headers)
+    
+    def channel(self, channel):
+        """
+        GET /channels/:channel/
+        Returns a channel object.
+        """
+        request_url = self.base_url + "s/" + channel
+        return requests.get(request_url, headers = self.version_header)
+    
+    def videos(self, channel):
+        """
+        GET /channels/:channel/videos
+        Returns a list of videos ordered by time of creation, starting
+        with the most recent from :channel.
+        """
+        request_url = self.base_url + "s/" + channel + "/videos"
+        return requests.get(request_url, headers = self.version_header)
+
+    def follows(self, channel):
+        """
+        GET /channels/:channel/follows
+        Returns a list of follow objects.
+        """
+        request_url = self.base_url + "s/" + channel + "/follows"
+        return requests.get(request_url, headers = self.version_header)
+    
+    def editors(self, channel):
+        """
+        GET /channels/:channel/editors
+        Returns a list of user objects who are editors of :channel.
+        """
+        request_url = self.base_url + "s/" + channel + "/editors"
+        headers = self.version_header.copy()
+        if self.oauth:
+            headers.update(self.oauth_header)
+        return requests.get(request_url, headers = headers)
+
+    def stream_key(self, channel):
+        """
+        DELETE /channels/:channel/stream_key
+        Resets channel's stream key.
+        """
+        request_url = self.base_url + "s/" + channel + "/stream_key"
+        headers = self.version_header.copy()
+        if self.oauth:
+            headers.update(self.oauth_header)
+        return requests.delete(request_url, headers = headers)
+    
+    def post(self, channel):
+        """
+        POST /channels/:channel/commercial
+        Start commercial on channel.
+        """
+        request_url = self.base_url + "s/" + channel + "/commercial"
+        headers = self.version_header.copy()
+        if self.oauth:
+            headers.update(self.oauth_header)
+        return requests.post(request_url, headers = headers)
+    
+    def teams(self, channel):
+        """
+        GET /channels/:channel/teams
+        Returns a list of team objects :channel belongs to.
+        """
+        request_url = self.base_url + "s/" + channel + "/teams"
+        return requests.get(request_url, headers = self.version_header)
