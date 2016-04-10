@@ -12,6 +12,19 @@ class Resource(object):
         if self.oauth:
             self.oauth_header = {'Authorization':'OAuth ' + oauth}
 
+    def GET(self, url, headers):
+        """ Function to make API GET requests """
+        return requests.get(url, headers = headers)
+        
+    def POST(self, url, headers):
+        """ Function to make API POST requests """
+        return requests.post(url, headers = headers)
+        
+    def DELETE(self, url, headers):
+        """ Function to make API DELETE requests """
+        return requests.delete(url, headers = headers)
+        
+
 class Root(Resource):
     """ Class for Root API resource """
 
@@ -31,7 +44,7 @@ class Root(Resource):
         if self.oauth:
             headers.update(self.oauth_header)
 
-        return requests.get(self.base_url, headers = headers)
+        return self.GET(self.base_url, headers)
 
 class Stream(Resource):
     """ Class for Stream API resource """
@@ -49,7 +62,7 @@ class Stream(Resource):
         Returns a stream object if live.
         """
         request_url = self.base_url + "/" + channel
-        return requests.get(request_url, headers = self.version_header)
+        return self.GET(request_url, self.version_header)
 
     # TODO: Implement query parameters (game, channel, limit, etc.)
     def get(self):
@@ -58,7 +71,7 @@ class Stream(Resource):
         Returns a list of stream objects that are queried by a number of
         parameters sorted by number of viewers descending.
         """
-        return requests.get(self.base_url, headers = self.version_header)
+        return self.GET(self.base_url, self.version_header)
 
     def featured(self):
         """
@@ -66,7 +79,7 @@ class Stream(Resource):
         Returns a list of featured (promoted) stream objects.
         """
         request_url = self.base_url + "/featured"
-        return requests.get(request_url, headers = self.version_header)
+        return self.GET(request_url, self.version_header)
 
     def summary(self):
         """
@@ -74,7 +87,7 @@ class Stream(Resource):
         Returns a summary of current streams.
         """
         request_url = self.base_url + "/summary"
-        return requests.get(request_url, headers = self.version_header)
+        return self.GET(request_url, self.version_header)
     
     def followed(self):
         """
@@ -86,7 +99,7 @@ class Stream(Resource):
         if self.oauth:
             headers.update(self.oauth_header)
 
-        return requests.get(request_url, headers = headers)
+        return self.GET(request_url, headers)
 
 class User(Resource):
     """ Class for User API resource """
@@ -107,7 +120,7 @@ class User(Resource):
         headers = self.version_header.copy()
         if self.oauth:
             headers.update(self.oauth_header)
-        return requests.get(self.base_url, headers = headers)
+        return self.GET(self.base_url, headers)
 
     def user(self, user):
         """
@@ -115,12 +128,10 @@ class User(Resource):
         Returns a user object.
         """
         request_url = self.base_url + "s/" + user
-        return requests.get(request_url, headers = self.version_header)
+        return self.GET(request_url, self.version_header)
 
 class Channel(Resource):
-    """
-    DOCSTRING
-    """
+    """ Class for Channel API resource """
 
 
     def __init__(self, oauth = ''):
@@ -136,7 +147,7 @@ class Channel(Resource):
         headers = self.version_header.copy()
         if self.oauth:
             headers.update(self.oauth_header)
-        return requests.get(self.base_url, headers = headers)
+        return self.GET(self.base_url, headers)
     
     def channel(self, channel):
         """
@@ -144,7 +155,7 @@ class Channel(Resource):
         Returns a channel object.
         """
         request_url = self.base_url + "s/" + channel
-        return requests.get(request_url, headers = self.version_header)
+        return self.GET(request_url, self.version_header)
     
     def videos(self, channel):
         """
@@ -153,7 +164,7 @@ class Channel(Resource):
         with the most recent from :channel.
         """
         request_url = self.base_url + "s/" + channel + "/videos"
-        return requests.get(request_url, headers = self.version_header)
+        return self.GET(request_url, self.version_header)
 
     def follows(self, channel):
         """
@@ -161,7 +172,7 @@ class Channel(Resource):
         Returns a list of follow objects.
         """
         request_url = self.base_url + "s/" + channel + "/follows"
-        return requests.get(request_url, headers = self.version_header)
+        return self.GET(request_url, self.version_header)
     
     def editors(self, channel):
         """
@@ -172,7 +183,7 @@ class Channel(Resource):
         headers = self.version_header.copy()
         if self.oauth:
             headers.update(self.oauth_header)
-        return requests.get(request_url, headers = headers)
+        return self.GET(request_url, headers)
 
     def stream_key(self, channel):
         """
@@ -183,7 +194,7 @@ class Channel(Resource):
         headers = self.version_header.copy()
         if self.oauth:
             headers.update(self.oauth_header)
-        return requests.delete(request_url, headers = headers)
+        return self.DELETE(request_url, headers)
     
     def post(self, channel):
         """
@@ -194,7 +205,7 @@ class Channel(Resource):
         headers = self.version_header.copy()
         if self.oauth:
             headers.update(self.oauth_header)
-        return requests.post(request_url, headers = headers)
+        return self.POST(request_url, headers)
     
     def teams(self, channel):
         """
@@ -202,4 +213,4 @@ class Channel(Resource):
         Returns a list of team objects :channel belongs to.
         """
         request_url = self.base_url + "s/" + channel + "/teams"
-        return requests.get(request_url, headers = self.version_header)
+        return self.GET(request_url, self.version_header)
