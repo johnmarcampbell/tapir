@@ -11,10 +11,12 @@ class Resource(object):
         self.oauth = oauth
         if self.oauth:
             self.oauth_header = {'Authorization':'OAuth ' + oauth}
+        self.query_dict = {}
+        self.query_string = ''
 
     def GET(self, url, headers):
         """ Function to make API GET requests """
-        return requests.get(url, headers = headers)
+        return requests.get(url + self.query_string, headers = headers)
         
     def POST(self, url, headers):
         """ Function to make API POST requests """
@@ -23,6 +25,29 @@ class Resource(object):
     def DELETE(self, url, headers):
         """ Function to make API DELETE requests """
         return requests.delete(url, headers = headers)
+
+    def add_query_parameter(self, parameter, value):
+        """ Function to add query parameters to API requests """
+        if parameter in self.query_dict:
+           self.query_dict[parameter] += "," + value 
+        else:
+           self.query_dict[parameter] = value 
+
+        self.make_query_string()
+            
+
+    def reset_query_parameters(self):
+        """ Function to reset the query parameters for a resource to zero """
+        self.query_dict = {}
+        self.make_query_string()
+
+    def make_query_string(self):
+        """ Use self.query_dict to create self.query_string """
+        self.query_string = '?'
+        for k,v in self.query_dict.items():
+            self.query_string += k + "=" + v + "&"
+        self.query_string = self.query_string[:-1] #Remove last "&"
+        
         
 
 class Root(Resource):
